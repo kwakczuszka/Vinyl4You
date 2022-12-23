@@ -7,27 +7,139 @@
 
 using namespace std; 
 
-FormLogin::FormLogin(const wxString& title) : wxFrame((wxFrame*)NULL, wxID_ANY, title, wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 250),
-        wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
-    wxPanel* panel = new wxPanel(this, wxID_ANY);
+FormRegister::FormRegister() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Rejestracja", wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 180),
+    wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
 
+    wxPanel* panel = new wxPanel(this, wxID_ANY);
     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 
     wxBoxSizer* hbox1 = new wxBoxSizer(wxHORIZONTAL);
+
+    login_label = new wxStaticText(panel, wxID_ANY, wxT("Login: "), wxDefaultPosition, wxSize(100, -1));
+    hbox1->Add(login_label, 0);
+
+    login_input = new wxTextCtrl(panel, wxID_ANY);
+    hbox1->Add(login_input, 1);
+
+    vbox->Add(hbox1, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
+    //
+    wxBoxSizer* hbox2 = new wxBoxSizer(wxHORIZONTAL);
+    password_label = new wxStaticText(panel, wxID_ANY, wxT("Hasło: "), wxDefaultPosition, wxSize(100, -1));
+    hbox2->Add(password_label, 0);
+
+    password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+    hbox2->Add(password_input, 1);
+
+    vbox->Add(hbox2, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
+    //
+    wxBoxSizer* hbox3 = new wxBoxSizer(wxHORIZONTAL);
+    rpt_password_label = new wxStaticText(panel, wxID_ANY, wxT("Powtórz hasło: "), wxDefaultPosition, wxSize(100, -1));
+    hbox3->Add(rpt_password_label, 0);
+
+    rpt_password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+    hbox3->Add(rpt_password_input, 1);
+
+    vbox->Add(hbox3, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
+
+    wxBoxSizer* hbox4 = new wxBoxSizer(wxHORIZONTAL);
+
+    button_ret_login = new wxButton(panel, BUTTON_Ret_Login, wxT("Powrót do logowania"));
+    hbox4->Add(button_ret_login);
+
+    button_register = new wxButton(panel, BUTTON_Register, wxT("Zarejestruj się"));
+    hbox4->Add(button_register);
+
+    vbox->Add(hbox4, 0, wxALIGN_RIGHT | wxTOP | wxRIGHT | wxBOTTOM, 10);
+
+    panel->SetSizer(vbox);
+    Centre();
+}
+
+void FormRegister::OnRegister(wxCommandEvent &event) {
+    wxString username = login_input->GetValue();
+    wxString password = password_input->GetValue();
+    wxString rpt_password = rpt_password_input->GetValue();
+
+    if (username.size() < 3 || password.size() < 3 || rpt_password.size() < 3) 
+        wxMessageBox(wxT("Login i/lub hasło muszą składać się z co najmniej 3 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+    
+
+    else if(password != rpt_password)
+        wxMessageBox(wxT("Hasła muszą być identyczne!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+
+    else {
+        fstream user_pass;
+        fstream user_log;
+        user_pass.open("pass_data.txt", ios::in | ios::app);
+        user_log.open("log_data.txt", ios::in | ios::app);
+        bool success = false;
+
+        if (user_pass.good() && user_log.good()) {
+            string a;
+            bool x = true;
+            while (getline(user_log, a)) {
+                string j = string(username);
+                if (j == a) {
+                    wxMessageBox(wxT("Login zajęty!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+                    x = false;
+                }
+            }
+            if (x) {
+                user_log.close();
+                user_log.open("log_data.txt", ios::in | ios::app);
+                string h = md5(string(password.mb_str()));
+                string g = string(username);
+                h += "\n";
+                g += "\n";
+                user_pass << h;
+                user_log << g;
+                success = true;
+            }
+        }
+        if (success) {
+            Close(true);
+            FormLogin* log_ = new FormLogin();
+            log_->Show(true);
+            wxMessageBox(wxT("Teraz możesz sie zalogować!"), wxT("Rejestracja pomyślna!"));
+        }
+    }
+}
+
+void FormRegister::OnRetLogin(wxCommandEvent& event) {
+    Close(true);
+    FormLogin* log_ = new FormLogin();
+    log_->Show(true);
+}
+
+FormRegister::~FormRegister() = default;
+
+BEGIN_EVENT_TABLE(FormRegister, wxFrame)
+EVT_BUTTON(BUTTON_Register, FormRegister::OnRegister)
+EVT_BUTTON(BUTTON_Ret_Login, FormRegister::OnRetLogin)
+END_EVENT_TABLE()
+
+FormLogin::FormLogin() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Logowanie", wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 150),
+        wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
+
+    wxPanel* panel = new wxPanel(this, wxID_ANY);
+    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* hbox1 = new wxBoxSizer(wxHORIZONTAL);
+    
     login_label = new wxStaticText(panel, wxID_ANY, wxT("Login: "), wxDefaultPosition, wxSize(70, -1));
     hbox1->Add(login_label, 0);
 
     login_input = new wxTextCtrl(panel, wxID_ANY);
     hbox1->Add(login_input, 1);
+
     vbox->Add(hbox1, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
 
     wxBoxSizer* hbox2 = new wxBoxSizer(wxHORIZONTAL);
     password_label = new wxStaticText(panel, wxID_ANY, wxT("Hasło: "), wxDefaultPosition, wxSize(70, -1));
     hbox2->Add(password_label, 0);
 
-    password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""),
-        wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+    password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
     hbox2->Add(password_input, 1);
+
     vbox->Add(hbox2, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
 
     wxBoxSizer* hbox3 = new wxBoxSizer(wxHORIZONTAL);
@@ -37,6 +149,7 @@ FormLogin::FormLogin(const wxString& title) : wxFrame((wxFrame*)NULL, wxID_ANY, 
 
     button_register = new wxButton(panel, BUTTON_Register, wxT("Zarejestruj się"));
     hbox3->Add(button_register);
+
     vbox->Add(hbox3, 0, wxALIGN_RIGHT | wxTOP | wxRIGHT | wxBOTTOM, 10);
 
     panel->SetSizer(vbox);
@@ -82,53 +195,12 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
 }
 
 void FormLogin::OnRegister(wxCommandEvent& event) {
-    wxString username = login_input->GetValue();
-    wxString password = password_input->GetValue();
-
-    if (username.size() < 3 || password.size() < 3) {
-        wxMessageBox(wxT("Login i/lub hasło muszą składać się z co najmniej 3 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
-    }
-    else {
-        fstream user_pass;
-        fstream user_log;
-        user_pass.open("pass_data.txt", ios::in | ios::app);
-        user_log.open("log_data.txt", ios::in | ios::app);
-        bool success = false;
-
-        if (user_pass.good()&&user_log.good()) {
-            wxString username = login_input->GetValue();
-            wxString password = password_input->GetValue();
-            string a;
-            bool x = true;
-            while (getline(user_log, a)) {
-                string j = string(username);
-                if (j == a) {
-                    wxMessageBox(wxT("Login zajęty!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
-                    x = false;
-               }
-            }
-            if (x) {
-                user_log.close();
-                user_log.open("log_data.txt", ios::in | ios::app);
-                string h = md5(string(password.mb_str()));
-                string g = string(username);
-                h += "\n";
-                g += "\n";
-                user_pass<<h;
-                user_log<<g;
-                success = true;
-            }  
-        }
-        if (success) {
-            Close(true);
-            FormLogin* okno = new FormLogin("Vinyl4You - Logowanie");
-            okno->Show(true);
-            wxMessageBox(wxT("Teraz możesz sie zalogować!"), wxT("Rejestracja pomyślna!"));
-        }
-    }
+    FormRegister* regist_ = new FormRegister;
+    regist_->Show(true);
+    Close();
 }
 
-FormLogin::~FormLogin() {}
+FormLogin::~FormLogin() = default;
 
 BEGIN_EVENT_TABLE(FormLogin, wxFrame)
 EVT_BUTTON(BUTTON_Login, FormLogin::OnLogin)

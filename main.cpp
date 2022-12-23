@@ -9,7 +9,7 @@
 bool MyApp::OnInit()
 {
 
-    FormLogin* logowanko = new FormLogin(wxT("Vinyl4You - Logowanie"));
+    FormLogin* logowanko = new FormLogin;
     logowanko->Show(true);
     return true;
 }

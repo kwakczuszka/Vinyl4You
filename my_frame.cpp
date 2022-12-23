@@ -6,7 +6,8 @@
 #include "form_login.h"
 #include "my_frame.h"
 
-MyFrame::MyFrame() : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client")
+MyFrame::MyFrame() : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client", wxPoint(wxID_ANY, wxID_ANY), wxSize(640, 480),
+    wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN)
 {
     wxBORDER_THEME;
     wxMenu* menu_options = new wxMenu;
@@ -31,6 +32,8 @@ MyFrame::MyFrame() : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client")
     Bind(wxEVT_MENU, &MyFrame::OnLogout, this, ID_Logout);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
+
+    Centre();
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)
@@ -46,7 +49,7 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 void MyFrame::OnLogout(wxCommandEvent& event)
 {
     Close(true);
-    FormLogin* formLogin = new FormLogin(wxT("Vinyl4You - Logowanie"));
+    FormLogin* formLogin = new FormLogin();
     formLogin->Show(true);
     wxMessageBox(wxT("Sesja zakończona"), wxT("Zostałeś wylogowany!"), wxICON_INFORMATION);
 
