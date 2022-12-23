@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FORMLOGIN_H
+#define FORMLOGIN_H
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -36,4 +37,4 @@ private:
         BUTTON_Register = wxID_HIGHEST + 2
     };
 };
-
+#endif

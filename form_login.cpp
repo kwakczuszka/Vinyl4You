@@ -7,7 +7,7 @@
 
 using namespace std; 
 
-FormLogin::FormLogin(const wxString& title) : wxFrame((wxFrame*)NULL, wxID_ANY, title, wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 200),
+FormLogin::FormLogin(const wxString& title) : wxFrame((wxFrame*)NULL, wxID_ANY, title, wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 250),
         wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
     wxPanel* panel = new wxPanel(this, wxID_ANY);
 
@@ -34,8 +34,6 @@ FormLogin::FormLogin(const wxString& title) : wxFrame((wxFrame*)NULL, wxID_ANY, 
 
     button_login = new wxButton(panel, BUTTON_Login, wxT("Zaloguj się"));
     hbox3->Add(button_login);
-    vbox->Add(hbox3, 0, wxALIGN_RIGHT | wxTOP | wxRIGHT | wxBOTTOM, 10);
-
 
     button_register = new wxButton(panel, BUTTON_Register, wxT("Zarejestruj się"));
     hbox3->Add(button_register);
