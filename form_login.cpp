@@ -3,55 +3,59 @@
 #include "main.h"
 #include "md5.h"
 #include <fstream>
-#include "my_frame.h"
+#include "main_frame.h"
 
 using namespace std; 
 
 FormRegister::FormRegister() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Rejestracja", wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 180),
     wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
 
+    SetIcon(wxICON(vinyl_ico));
+
     wxPanel* panel = new wxPanel(this, wxID_ANY);
-    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* vert_box = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer* hbox1 = new wxBoxSizer(wxHORIZONTAL);
-
+    wxBoxSizer* horiz_box1 = new wxBoxSizer(wxHORIZONTAL);
     login_label = new wxStaticText(panel, wxID_ANY, wxT("Login: "), wxDefaultPosition, wxSize(100, -1));
-    hbox1->Add(login_label, 0);
+    horiz_box1->Add(login_label, 0);
 
-    login_input = new wxTextCtrl(panel, wxID_ANY);
-    hbox1->Add(login_input, 1);
+    login_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    horiz_box1->Add(login_input, 1);
 
-    vbox->Add(hbox1, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
-    //
-    wxBoxSizer* hbox2 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* horiz_box2 = new wxBoxSizer(wxHORIZONTAL);
     password_label = new wxStaticText(panel, wxID_ANY, wxT("Hasło: "), wxDefaultPosition, wxSize(100, -1));
-    hbox2->Add(password_label, 0);
+    horiz_box2->Add(password_label, 0);
 
-    password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-    hbox2->Add(password_input, 1);
+    password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD | wxTE_PROCESS_ENTER);
+    horiz_box2->Add(password_input, 1);
 
-    vbox->Add(hbox2, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
-    //
-    wxBoxSizer* hbox3 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* horiz_box3 = new wxBoxSizer(wxHORIZONTAL);
     rpt_password_label = new wxStaticText(panel, wxID_ANY, wxT("Powtórz hasło: "), wxDefaultPosition, wxSize(100, -1));
-    hbox3->Add(rpt_password_label, 0);
+    horiz_box3->Add(rpt_password_label, 0);
 
-    rpt_password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-    hbox3->Add(rpt_password_input, 1);
+    rpt_password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD | wxTE_PROCESS_ENTER);
+    horiz_box3->Add(rpt_password_input, 1);
 
-    vbox->Add(hbox3, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
-
-    wxBoxSizer* hbox4 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* horiz_box4 = new wxBoxSizer(wxHORIZONTAL);
 
     button_ret_login = new wxButton(panel, BUTTON_Ret_Login, wxT("Powrót do logowania"));
-    hbox4->Add(button_ret_login);
+    horiz_box4->Add(button_ret_login);
 
     button_register = new wxButton(panel, BUTTON_Register, wxT("Zarejestruj się"));
-    hbox4->Add(button_register);
+    horiz_box4->Add(button_register);
 
-    vbox->Add(hbox4, 0, wxALIGN_RIGHT | wxTOP | wxRIGHT | wxBOTTOM, 10);
 
-    panel->SetSizer(vbox);
+    vert_box->Add(horiz_box1, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
+    vert_box->Add(horiz_box2, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
+    vert_box->Add(horiz_box3, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
+    vert_box->Add(horiz_box4, 0, wxALIGN_RIGHT | wxTOP | wxRIGHT | wxBOTTOM, 10);
+
+    panel->SetSizer(vert_box);
+    
+    login_input->Bind(wxEVT_TEXT_ENTER, &FormRegister::OnRegister, this);
+    password_input->Bind(wxEVT_TEXT_ENTER, &FormRegister::OnRegister, this);
+    rpt_password_input->Bind(wxEVT_TEXT_ENTER, &FormRegister::OnRegister, this);
+
     Centre();
 }
 
@@ -121,38 +125,44 @@ END_EVENT_TABLE()
 FormLogin::FormLogin() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Logowanie", wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 150),
         wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
 
+    SetIcon(wxICON(vinyl_ico));
     wxPanel* panel = new wxPanel(this, wxID_ANY);
-    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* hbox1 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* vert_box = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* horiz_box1 = new wxBoxSizer(wxHORIZONTAL);
     
     login_label = new wxStaticText(panel, wxID_ANY, wxT("Login: "), wxDefaultPosition, wxSize(70, -1));
-    hbox1->Add(login_label, 0);
+    horiz_box1->Add(login_label, 0);
 
-    login_input = new wxTextCtrl(panel, wxID_ANY);
-    hbox1->Add(login_input, 1);
+    login_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    horiz_box1->Add(login_input, 1);
 
-    vbox->Add(hbox1, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
+    vert_box->Add(horiz_box1, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 10);
 
-    wxBoxSizer* hbox2 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* horiz_box2 = new wxBoxSizer(wxHORIZONTAL);
     password_label = new wxStaticText(panel, wxID_ANY, wxT("Hasło: "), wxDefaultPosition, wxSize(70, -1));
-    hbox2->Add(password_label, 0);
+    horiz_box2->Add(password_label, 0);
 
-    password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-    hbox2->Add(password_input, 1);
+    password_input = new wxTextCtrl(panel, wxID_ANY, wxString(""), wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD | wxTE_PROCESS_ENTER);
+    horiz_box2->Add(password_input, 1);
 
-    vbox->Add(hbox2, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
+    vert_box->Add(horiz_box2, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
 
-    wxBoxSizer* hbox3 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* horiz_box3 = new wxBoxSizer(wxHORIZONTAL);
 
     button_login = new wxButton(panel, BUTTON_Login, wxT("Zaloguj się"));
-    hbox3->Add(button_login);
+    horiz_box3->Add(button_login);
 
     button_register = new wxButton(panel, BUTTON_Register, wxT("Zarejestruj się"));
-    hbox3->Add(button_register);
+    horiz_box3->Add(button_register);
 
-    vbox->Add(hbox3, 0, wxALIGN_RIGHT | wxTOP | wxRIGHT | wxBOTTOM, 10);
+    vert_box->Add(horiz_box3, 0, wxALIGN_RIGHT | wxTOP | wxRIGHT | wxBOTTOM, 10);
 
-    panel->SetSizer(vbox);
+    panel->SetSizer(vert_box);
+
+    login_input->Bind(wxEVT_TEXT_ENTER, &FormLogin::OnLogin, this);
+    password_input->Bind(wxEVT_TEXT_ENTER, &FormLogin::OnLogin, this);
+
+
     Centre();
 }
 
@@ -180,7 +190,7 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
                 if (a == string(username) && md5(string(password)) == b) {
                     x = false;
                     Close(true);
-                    MyFrame* frame = new MyFrame();
+                    MainFrame* frame = new MainFrame();
                     frame->Show(true);
                     wxMessageBox(wxT("Witaj w Vinyl4You!"), wxT("Logowanie pomyślne!"));
                 }

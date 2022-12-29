@@ -1,0 +1,2 @@
+vinyl_ico ICON vinyl4u.ico
+#include <wx/msw/wx.rc>

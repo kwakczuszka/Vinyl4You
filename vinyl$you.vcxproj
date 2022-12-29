@@ -22,17 +22,21 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="form_login.cpp" />
     <ClCompile Include="md5.cpp" />
-    <ClCompile Include="my_frame.cpp" />
+    <ClCompile Include="main_frame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="form_login.h" />
-    <ClInclude Include="my_frame.h" />
+    <ClInclude Include="main_frame.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="log_data.txt" />
     <Text Include="pass_data.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="vinyl4you.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -93,7 +97,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc; $(WXWIN)\include\msw</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -101,6 +105,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(WXWIN)\lib\vc_lib;$(WXWIN)\include; $(WXWIN)\include\msvc; $(WXWIN)\include\msw</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ResourceCompile>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -110,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc; $(WXWIN)\include\msw</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -120,6 +130,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
     </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(WXWIN)\lib\vc_lib;$(WXWIN)\include; $(WXWIN)\include\msvc; $(WXWIN)\include\msw</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ResourceCompile>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
