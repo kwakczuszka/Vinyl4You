@@ -190,7 +190,7 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
                 if (a == string(username) && md5(string(password)) == b) {
                     x = false;
                     Close(true);
-                    MainFrame* frame = new MainFrame();
+                    MainFrame* frame = new MainFrame(a);
                     frame->Show(true);
                     wxMessageBox(wxT("Witaj w Vinyl4You!"), wxT("Logowanie pomyślne!"));
                 }

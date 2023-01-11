@@ -2,10 +2,11 @@
 
 class MainFrame : public wxFrame {
 public:
-    MainFrame();
+    MainFrame(std::string logged_user);
     ~MainFrame();
 
 private:
+    std::string logged_user;
     wxButton* button_rent;
     wxButton* button_my_rentals;
     wxButton* button_all_discs;

@@ -6,7 +6,7 @@
 #include "form_login.h"
 #include "main_frame.h"
 
-MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client", wxPoint(wxID_ANY, wxID_ANY), wxDefaultSize,
+MainFrame::MainFrame(std::string logged_user) : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client", wxPoint(wxID_ANY, wxID_ANY), wxSize(640, 480),
     wxSYSTEM_MENU | wxMINIMIZE_BOX| wxMAXIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
     SetIcon(wxICON(vinyl_ico));
     wxBORDER_THEME;
@@ -26,6 +26,12 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client", wxPoint(
     button_return_disc = new wxButton(panel, BUTTON_return_disc, wxT("Zwróć płytę"));
     horiz_box2->Add(button_return_disc);
 
+    panel->SetBackgroundColour(*wxWHITE);
+    vert_box->Add(horiz_box1, 1, wxALIGN_CENTER, 1);
+    vert_box->Add(horiz_box2, 1, wxALIGN_CENTER, 1);
+    panel->SetSizer(vert_box);
+    Centre();
+
     menu_options->Append(ID_Logout, "&Wyloguj \tCtrl+L",
         "Powrót do ekranu logowania");
     menu_options->AppendSeparator();
@@ -42,31 +48,22 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client", wxPoint(
     SetMenuBar(menuBar);
 
     CreateStatusBar();
-    SetStatusText("Vinyl4You Client v. 1.0. All rights reserved.");
+    SetStatusText("Vinyl4You Client v. 1.0. All rights reserved. Logged as: "+logged_user);
 
     Bind(wxEVT_MENU, &MainFrame::OnLogout, this, ID_Logout);
     Bind(wxEVT_MENU, &MainFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MainFrame::OnExit, this, wxID_EXIT);
-
-    panel->SetBackgroundColour(*wxWHITE);
-    vert_box->Add(horiz_box1, 10, wxEXPAND | wxRIGHT | wxTOP | wxRIGHT, 10);
-    vert_box->Add(horiz_box2, 5| 5, wxEXPAND | wxLEFT | wxTOP | wxRIGHT, 10);
-    panel->SetSizer(vert_box);
-    Centre();
 }
 
-void MainFrame::OnExit(wxCommandEvent& event)
-{
+void MainFrame::OnExit(wxCommandEvent& event) {
     Close(true);
 }
 
-void MainFrame::OnAbout(wxCommandEvent& event)
-{
+void MainFrame::OnAbout(wxCommandEvent& event) {
     wxMessageBox("no siema, chcesz winylka?", "vinyl4you", wxOK | wxICON_INFORMATION);
 }
 
-void MainFrame::OnLogout(wxCommandEvent& event)
-{
+void MainFrame::OnLogout(wxCommandEvent& event) {
     Close(true);
     FormLogin* formLogin = new FormLogin();
     formLogin->Show(true);
@@ -78,4 +75,7 @@ MainFrame::~MainFrame() = default;
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_BUTTON(BUTTON_my_rentals, MainFrame::OnAbout)
+EVT_BUTTON(BUTTON_rent, MainFrame::OnAbout)
+EVT_BUTTON(BUTTON_all_discs, MainFrame::OnAbout)
+EVT_BUTTON(BUTTON_return_disc, MainFrame::OnAbout)
 END_EVENT_TABLE()
