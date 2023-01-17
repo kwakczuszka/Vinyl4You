@@ -76,6 +76,7 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
         fstream user_log;
         user_pass.open("pass_data.txt", ios::in | ios::app);
         user_log.open("log_data.txt", ios::in | ios::app);
+
         bool success = false;
 
         if (user_pass.good() && user_log.good()) {

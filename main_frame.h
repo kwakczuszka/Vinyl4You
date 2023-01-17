@@ -11,10 +11,20 @@ private:
     wxButton* button_my_rentals;
     wxButton* button_all_discs;
     wxButton* button_return_disc;
+    wxPanel* panel_menu;
+    wxPanel* panel_rent;
+    wxPanel* panel_my_rentals;
+    wxPanel* panel_all_discs;
+    wxPanel* panel_return_disc;
     
     void OnLogout(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+
+    void OnRent(wxCommandEvent& event);
+    void OnMyRentals(wxCommandEvent& event);
+    void OnAllDiscs(wxCommandEvent& event);
+    void OnReturnDisc(wxCommandEvent& event);
 
 private:
     DECLARE_EVENT_TABLE()
