@@ -34,8 +34,10 @@
     <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="disc_data.txt" />
     <Text Include="log_data.txt" />
     <Text Include="pass_data.txt" />
+    <Text Include="rentals_data.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vinyl4you.rc" />

@@ -58,6 +58,12 @@
     <Text Include="pass_data.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="disc_data.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="rentals_data.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vinyl4you.rc">
