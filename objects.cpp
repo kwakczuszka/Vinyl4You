@@ -5,6 +5,7 @@
 #include <fstream>
 #include <vector>
 #include "objects.h"
+#include "main_frame.h"
 #include "wx/wxprec.h"
 #include <wx/listctrl.h>
 
@@ -124,7 +125,7 @@ EVT_LIST_ITEM_ACTIVATED(LIST_CTRL, DiscListCtrl::OnActivated)
 wxEND_EVENT_TABLE()
 
 void DiscListCtrl::OnActivated(wxListEvent& event) {
-    LogEvent(event, wxT("OnActivated"));
+    MainFrame::list_OnRent(event, event.GetIndex());
 }
 
 void DiscListCtrl::LogEvent(const wxListEvent& event, const wxChar* eventName) {
@@ -132,17 +133,8 @@ void DiscListCtrl::LogEvent(const wxListEvent& event, const wxChar* eventName) {
         event.GetIndex(), eventName,
         event.GetText(), static_cast<long>(event.GetData()), static_cast<long>(event.GetId()));
 }
-const wxChar* SMALL_VIRTUAL_VIEW_ITEMS[][2] = {
-    { wxT("Cat"), wxT("meow") },
-    { wxT("Cow"), wxT("moo") },
-    { wxT("Crow"), wxT("caw") },
-    { wxT("Dog"), wxT("woof") },
-    { wxT("Duck"), wxT("quack") },
-    { wxT("Mouse"), wxT("squeak") },
-    { wxT("Owl"), wxT("hoo") },
-    { wxT("Pig"), wxT("oink") },
-    { wxT("Pigeon"), wxT("coo") },
-    { wxT("Sheep"), wxT("baaah") },
+const wxChar* SMALL_VIRTUAL_VIEW_ITEMS[][4] = {
+    {}
 };
 wxString DiscListCtrl::OnGetItemText(long item, long column) const {
     if (GetItemCount() == WXSIZEOF(SMALL_VIRTUAL_VIEW_ITEMS)) {

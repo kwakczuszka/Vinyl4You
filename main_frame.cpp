@@ -30,34 +30,20 @@ MainFrame::MainFrame(std::string logged_user) : wxFrame(nullptr, wxID_ANY, "Viny
 
     wxMenu* menu_options = new wxMenu;
 
-    button_rent = new wxButton(window_menu, BUTTON_rent, wxT("Wypożycz płytę"));
-    button_my_rentals = new wxButton(window_menu, BUTTON_my_rentals, wxT("Moje płyty"));
-    button_all_discs = new wxButton(window_menu, BUTTON_all_discs, wxT("Poznaj ofertę"));
-    button_return_disc = new wxButton(window_menu, BUTTON_return_disc, wxT("Zwróć płytę"));
+    button_rent =           new wxButton(window_menu, BUTTON_rent, wxT("Wypożycz płytę"));
+    button_my_rentals =     new wxButton(window_menu, BUTTON_my_rentals, wxT("Moje płyty"));
+    button_all_discs =      new wxButton(window_menu, BUTTON_all_discs, wxT("Poznaj ofertę"));
+    button_return_disc =    new wxButton(window_menu, BUTTON_return_disc, wxT("Zwróć płytę"));
 
     wxGridSizer* buttonSizer = new wxGridSizer(2, 2, 1, 1);
 
-    buttonSizer->Add(button_rent, wxALIGN_CENTER);
-    buttonSizer->Add(button_my_rentals, wxALIGN_CENTER);
-    buttonSizer->Add(button_all_discs, wxALIGN_CENTER);
-    buttonSizer->Add(button_return_disc, wxALIGN_CENTER);
+    buttonSizer->Add(button_rent,           wxALIGN_CENTER);
+    buttonSizer->Add(button_my_rentals,     wxALIGN_CENTER);
+    buttonSizer->Add(button_all_discs,      wxALIGN_CENTER);
+    buttonSizer->Add(button_return_disc,    wxALIGN_CENTER);
 
     window_menu->SetBackgroundColour(*wxWHITE);
     window_menu->SetSizer(buttonSizer);
-
-/*    wxBoxSizer* vert_box = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* horiz_box1 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* horiz_box2 = new wxBoxSizer(wxHORIZONTAL);
-    
-    horiz_box1->Add(button_rent, wxLEFT|wxTOP);
-    horiz_box1->Add(button_my_rentals, wxRIGHT|wxTOP);
-
-    horiz_box2->Add(button_all_discs, wxLEFT|wxBOTTOM);
-    horiz_box2->Add(button_return_disc, wxRIGHT|wxBOTTOM);
-
-    vert_box->Add(horiz_box1, wxTOP);
-    vert_box->Add(horiz_box2, wxBOTTOM);
-    panel_menu->SetSizer(vert_box);*/
 
     menu_options->Append(ID_Logout, "&Wyloguj \tCtrl+L", "Powrót do ekranu logowania");
     menu_options->AppendSeparator();
@@ -125,11 +111,11 @@ void MainFrame::OnRent(wxCommandEvent& event) {
     rentlist_list->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 250);
     rentlist_list->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 200);
 
-    for (Disc* i : disclist) {
-        long index = rentlist_list->InsertItem(0, _(i->title));
-        rentlist_list->SetItem(index, 1, _(i->artist));
-        rentlist_list->SetItem(index, 2, _(i->genre));
-        rentlist_list->SetItem(index, 3, _(i->length));
+    for (int i = disclist.size()-1; i >= 0; i--) {
+        long index = rentlist_list->InsertItem(0, _(disclist[i]->title));
+        rentlist_list->SetItem(index, 1, (disclist[i]->artist));
+        rentlist_list->SetItem(index, 2, (disclist[i]->genre));
+        rentlist_list->SetItem(index, 3, (disclist[i]->length));
     }
     
 
@@ -137,6 +123,11 @@ void MainFrame::OnRent(wxCommandEvent& event) {
     lolix->Add(rentlist_list);
     window_rent->SetSizer(lolix);
     window_rent->Show();
+}
+
+void MainFrame::list_OnRent(wxEvent& event, int index) {
+    wxMessageBox("no siema, chcesz winylka?", "vinyl4you", wxOK | wxICON_INFORMATION);
+
 }
 
 void MainFrame::OnMyRentals(wxCommandEvent& event) {

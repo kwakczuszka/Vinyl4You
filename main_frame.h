@@ -33,6 +33,8 @@ public:
     void OnAllDiscs(wxCommandEvent& event);
     void OnReturnDisc(wxCommandEvent& event);
 
+    static void list_OnRent(wxEvent& event, int index);
+
 private:
     DECLARE_EVENT_TABLE()
     enum {BUTTON_rent = 2};
