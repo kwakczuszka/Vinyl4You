@@ -1,10 +1,5 @@
-#pragma once
-#include <iostream>
-#include <string>
-#include <time.h>
 #include "wx/wxprec.h"
-#include "wx/listctrl.h"
-
+#include <wx/listctrl.h>
 
 using namespace std;
 
@@ -15,6 +10,9 @@ public:
     string artist;
     string genre;
     string length;
+    static vector <Disc*> disclist;
+    static vector <Disc*> disclist_my;
+    static vector <Disc*> disclist_rent;
 public:
     Disc(string lol);
 };
@@ -45,9 +43,11 @@ public:
 };
 
 class Rental {
+public:
     string login;
     string disc_id;
     Date* dedline;
+    static vector <Rental*> rentlist;
     bool passed();
 public:
     Rental(string lmao);
@@ -57,7 +57,7 @@ class DiscListCtrl : public wxListCtrl {
     public:
         DiscListCtrl(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxListCtrl(parent, id, pos, size, style) {}
         void OnActivated(wxListEvent & event);
-        void LogEvent(const wxListEvent& event, const wxChar* eventName);
+        void Format();
 
     public:
         virtual wxString OnGetItemText(long item, long column) const;

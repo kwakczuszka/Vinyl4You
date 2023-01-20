@@ -1,10 +1,4 @@
-#ifndef FORMLOGIN_H
-#define FORMLOGIN_H
 #include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "main.h"
 
 class FormLogin : public wxFrame
 {
@@ -73,5 +67,3 @@ private:
 
 
 };
-
-#endif

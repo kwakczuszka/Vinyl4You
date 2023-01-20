@@ -5,10 +5,7 @@
 #include <fstream>
 #include <vector>
 #include "objects.h"
-#include "main_frame.h"
-#include "wx/wxprec.h"
 #include <wx/listctrl.h>
-
 
 using namespace std;
 
@@ -19,6 +16,11 @@ static inline void rtrim(std::string& s) {
         }).base(), s.end());
 }
 
+vector<Disc*> Disc::disclist;
+vector<Disc*> Disc::disclist_rent;
+vector<Disc*> Disc::disclist_my;
+
+vector<Rental*> Rental::rentlist;
 
 Disc::Disc(string lol) {
     id = lol.substr(0, 3);
@@ -91,8 +93,8 @@ bool Date::three_mnths(int d, int m, int y) {
 }
 
 Rental::Rental(string lmao) {
-    login = lmao.substr(0, 12);
-    disc_id = lmao.substr(12, 3);
+    login = lmao.substr(0, 13);
+    disc_id = lmao.substr(13, 3);
     string x = lmao.substr(15, 2);
     string y = lmao.substr(17, 2);
     string z = lmao.substr(19, 4);
@@ -125,14 +127,22 @@ EVT_LIST_ITEM_ACTIVATED(LIST_CTRL, DiscListCtrl::OnActivated)
 wxEND_EVENT_TABLE()
 
 void DiscListCtrl::OnActivated(wxListEvent& event) {
-    MainFrame::list_OnRent(event, event.GetIndex());
 }
 
-void DiscListCtrl::LogEvent(const wxListEvent& event, const wxChar* eventName) {
-    wxLogMessage(wxT("Item %ld: %s (item text = %s, data = %ld lolol = %ld)"),
-        event.GetIndex(), eventName,
-        event.GetText(), static_cast<long>(event.GetData()), static_cast<long>(event.GetId()));
+void DiscListCtrl::Format() {
+    this->CentreOnParent();
+    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 300);
+    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 300);
+    this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 300);
+    this->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 200);
 }
+
+//void DiscListCtrl::LogEvent(const wxListEvent& event, const wxChar* eventName) {
+ //   wxLogMessage(wxT("Item %ld: %s (item text = %s, data = %ld lolol = %ld)"),
+  //      event.GetIndex(), eventName,
+   //     event.GetText(), static_cast<long>(event.GetData()), static_cast<long>(event.GetId()));
+//}
+
 const wxChar* SMALL_VIRTUAL_VIEW_ITEMS[][4] = {
     {}
 };
@@ -144,5 +154,6 @@ wxString DiscListCtrl::OnGetItemText(long item, long column) const {
         return wxString::Format(wxT("Column %ld of item %ld"), column, item);
     }
 }
+
 
 

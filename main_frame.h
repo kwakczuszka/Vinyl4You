@@ -1,9 +1,12 @@
 #pragma once
+#include "wx/wxprec.h"
 
 class MainFrame : public wxFrame {
 public:
     MainFrame(std::string logged_user);
     ~MainFrame();
+
+    
 
 private:
     std::string logged_user;
@@ -21,6 +24,8 @@ private:
     wxWindow* window_my_rentals;
     wxWindow* window_all_discs;
     wxWindow* window_return_disc;
+    
+
 
 public:
     
@@ -45,7 +50,7 @@ private:
     enum {ID_Window_menu = 50};
     enum {ID_Window_rent = 51};
     enum {ID_Window_my_rentals = 52};
+    enum {ID_Window_all_discs = 53};
+    enum {ID_Window_return_disc = 54};
 };
-
-
 
