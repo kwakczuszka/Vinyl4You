@@ -167,24 +167,22 @@ string Rental::pack() {
     return a;
 }
 
-
 wxBEGIN_EVENT_TABLE(DiscListCtrl, wxListCtrl)
 EVT_LIST_ITEM_ACTIVATED(LIST_CTRL, DiscListCtrl::OnActivated)
 wxEND_EVENT_TABLE()
 
-
 void DiscListCtrl::Format() {
-    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 300);
-    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 300);
+    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 350);
+    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 350);
     this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 300);
-    this->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 200);
+    this->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 156);
 }
 
 void DiscListCtrl::Format2() {
-    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 300);
-    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 300);
+    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 350);
+    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 350);
     this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 300);
-    this->InsertColumn(3, wxString("Termin zwrotu"), wxLIST_FORMAT_LEFT, 200);
+    this->InsertColumn(3, wxString("Termin zwrotu"), wxLIST_FORMAT_LEFT, 156);
 }
 
 const wxChar* SMALL_VIRTUAL_VIEW_ITEMS[][4] = {
@@ -290,7 +288,6 @@ void Calendar::DateGet(wxCalendarEvent& event) {
 DiscListCtrl* DiscListCtrl::rentlist_list;
 DiscListCtrl* DiscListCtrl::rentlist_my_list;
 DiscListCtrl* DiscListCtrl::all_discs_list;
-
 
 wxBEGIN_EVENT_TABLE(Calendar, wxCalendarCtrl)
 EVT_CALENDAR(CAL_DATE, Calendar::DateGet)

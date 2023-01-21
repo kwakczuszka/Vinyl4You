@@ -13,7 +13,6 @@
 #include <wx/wx.h>
 #include <wx/dc.h>
 
-
 using namespace std;
 
 MainFrame::~MainFrame() {
@@ -80,7 +79,7 @@ MainFrame::MainFrame(std::string logged_) : wxFrame(nullptr, wxID_ANY, "Vinyl4Yo
     wxInitAllImageHandlers();
     wxImage img_1("rent.jpg", wxBITMAP_TYPE_JPEG, -1);
     wxImage img_2("myrent.jpg", wxBITMAP_TYPE_JPEG, -1);
-    wxImage img_3("C:/Users/Krzysztof/Desktop/test.jpeg", wxBITMAP_TYPE_JPEG, -1);
+    wxImage img_3("all.jpg", wxBITMAP_TYPE_JPEG, -1);
     wxBitmap bmp_1(img_1, wxBITMAP_SCREEN_DEPTH);
     wxBitmap bmp_2(img_2, wxBITMAP_SCREEN_DEPTH);
     wxBitmap bmp_3(img_3, wxBITMAP_SCREEN_DEPTH);
@@ -242,13 +241,9 @@ void MainFrame::OnAllDiscs(wxCommandEvent& event) {
     MainFrame::Helpr(this, 3);
 }
 
-void MainFrame::OnReturnDisc(wxCommandEvent& event) {
-}
-
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_BUTTON(BUTTON_my_rentals, MainFrame::OnMyRentals)
 EVT_BUTTON(BUTTON_rent, MainFrame::OnRent)
 EVT_BUTTON(BUTTON_all_discs, MainFrame::OnAllDiscs)
-EVT_BUTTON(BUTTON_return_disc, MainFrame::OnReturnDisc)
 END_EVENT_TABLE()
 

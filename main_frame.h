@@ -1,5 +1,6 @@
 #include "wx/wxprec.h"
 #include "wx/listctrl.h"
+
 class MainFrame : public wxFrame {
 public:
     MainFrame(std::string logged_user);
@@ -11,7 +12,6 @@ private:
     wxBitmapButton* button_rent;
     wxBitmapButton* button_my_rentals;
     wxBitmapButton* button_all_discs;
- //   wxButton* button_return_disc;
     wxPanel* panel_menu;
     wxPanel* panel_rent;
     wxPanel* panel_my_rentals;
@@ -31,7 +31,6 @@ public:
     void OnRent(wxCommandEvent& event);
     void OnMyRentals(wxCommandEvent& event);
     void OnAllDiscs(wxCommandEvent& event);
-    void OnReturnDisc(wxCommandEvent& event);
     void Helpr(MainFrame* frame, int a);
 
     static void DataUpdate(std::string login);
