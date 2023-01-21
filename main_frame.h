@@ -1,6 +1,5 @@
-#pragma once
 #include "wx/wxprec.h"
-
+#include "wx/listctrl.h"
 class MainFrame : public wxFrame {
 public:
     MainFrame(std::string logged_user);
@@ -9,26 +8,22 @@ public:
     
 
 private:
-    std::string logged_user;
-    wxButton* button_rent;
-    wxButton* button_my_rentals;
-    wxButton* button_all_discs;
-    wxButton* button_return_disc;
+    wxBitmapButton* button_rent;
+    wxBitmapButton* button_my_rentals;
+    wxBitmapButton* button_all_discs;
+ //   wxButton* button_return_disc;
     wxPanel* panel_menu;
     wxPanel* panel_rent;
     wxPanel* panel_my_rentals;
     wxPanel* panel_all_discs;
     wxPanel* panel_return_disc;
-    wxWindow* window_menu;
-    wxWindow* window_rent;
-    wxWindow* window_my_rentals;
-    wxWindow* window_all_discs;
-    wxWindow* window_return_disc;
-    
-
 
 public:
-    
+    wxWindow* window_rent;
+    wxWindow* window_menu;
+
+    static std::string logged_user;
+
     void OnLogout(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
@@ -37,8 +32,9 @@ public:
     void OnMyRentals(wxCommandEvent& event);
     void OnAllDiscs(wxCommandEvent& event);
     void OnReturnDisc(wxCommandEvent& event);
+    void Helpr(MainFrame* frame, int a);
 
-    static void list_OnRent(wxEvent& event, int index);
+    static void DataUpdate(std::string login);
 
 private:
     DECLARE_EVENT_TABLE()

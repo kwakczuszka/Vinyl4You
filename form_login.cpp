@@ -64,8 +64,12 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
     wxString password = password_input->GetValue();
     wxString rpt_password = rpt_password_input->GetValue();
 
-    if (username.size() < 3 || password.size() < 3 || rpt_password.size() < 3) 
+    if (username.size() < 3 || password.size() < 3 || rpt_password.size() < 3) {
+        if (username.size() > 13) {
+            wxMessageBox(wxT("Login może składać się z maksymalnie 13 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+        }
         wxMessageBox(wxT("Login i/lub hasło muszą składać się z co najmniej 3 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+    }
     
 
     else if(password != rpt_password)
@@ -169,6 +173,7 @@ FormLogin::FormLogin() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Logowanie", wxP
 
 void FormLogin::OnQuit(wxCommandEvent& event) {
     Close(true);
+    this->~FormLogin();
 }
 
 void FormLogin::OnLogin(wxCommandEvent& event) {
@@ -181,6 +186,10 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
         wxString password = password_input->GetValue();
 
         if (username.size() < 3 || password.size() < 3) {
+            if (username.size() > 13) {
+                wxMessageBox(wxT("Login może składać się z maksymalnie 13 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+
+            }
             wxMessageBox(wxT("Login i/lub hasło muszą składać się z co najmniej 3 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
         } 
         else {
@@ -191,9 +200,11 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
                 if (a == string(username) && md5(string(password)) == b) {
                     x = false;
                     Close(true);
+
+                    wxMessageBox(wxT("Witaj w Vinyl4You!"), wxT("Logowanie pomyślne!"));
                     MainFrame* frame = new MainFrame(a);
                     frame->Show(true);
-                    wxMessageBox(wxT("Witaj w Vinyl4You!"), wxT("Logowanie pomyślne!"));
+
                 }
             }
             if (x) {

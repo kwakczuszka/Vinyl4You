@@ -42,6 +42,9 @@
   <ItemGroup>
     <ResourceCompile Include="vinyl4you.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Pictures\test.jpeg" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
