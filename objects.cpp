@@ -172,18 +172,18 @@ EVT_LIST_ITEM_ACTIVATED(LIST_CTRL, DiscListCtrl::OnActivated)
 wxEND_EVENT_TABLE()
 
 void DiscListCtrl::Format() {
-    this->SetFont(wxFont(20, wxFONTFAMILY_MODERN, wxFONTSTYLE_ITALIC, wxFONTWEIGHT_BOLD, false, wxEmptyString, wxFONTENCODING_DEFAULT));
-    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 350);
-    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 350);
-    this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 300);
+    this->SetFont(wxFont(18, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString, wxFONTENCODING_DEFAULT));
+    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 450);
+    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 275);
+    this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 275);
     this->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 256);
 }
 
 void DiscListCtrl::Format2() {
-    this->SetFont(wxFont(20, wxFONTFAMILY_MODERN, wxFONTSTYLE_ITALIC, wxFONTWEIGHT_BOLD, false, wxEmptyString, wxFONTENCODING_DEFAULT));
-    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 350);
-    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 350);
-    this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 300);
+    this->SetFont(wxFont(18, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString, wxFONTENCODING_DEFAULT));
+    this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 450);
+    this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 275);
+    this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 275);
     this->InsertColumn(3, wxString("Termin zwrotu"), wxLIST_FORMAT_LEFT, 256);
 }
 
@@ -234,9 +234,11 @@ void DiscListCtrl::Refresh_lists() {
 
 void DiscListCtrl::OnActivated(wxListEvent& event) {
     if (this->GetParent()->GetName() == "rent") {
+        wxMessageBox(wxT("Wybierz deklarowaną datę zwrotu płyty (max. 3 miesiące)"), wxT("Informacja"), wxICON_INFORMATION);
+
         wxDateTime dt = wxDefaultDateTime;
         wxListItem itemek = event.GetItem();
-        Calendar* cal = new Calendar(this, CAL_DATE, itemek, dt, wxPoint(150, 150), wxDefaultSize, NULL, "");
+        Calendar* cal = new Calendar(this, CAL_DATE, itemek, dt, wxPoint(328, 50), wxSize(600, 300), NULL, "");
     }
     else if (this->GetParent()->GetName() == "return") {
         wxListItem item = event.GetItem();
@@ -270,7 +272,6 @@ void DiscListCtrl::OnActivated(wxListEvent& event) {
     else {
         wxMessageBox(wxT("W celu wypożyczenia płyty, skorzystaj z zakładki \"Wypożycz płytę\""), wxT("Informacja"), wxICON_INFORMATION);
     }
-
 }
 
 void Calendar::DateGet(wxCalendarEvent& event) {
