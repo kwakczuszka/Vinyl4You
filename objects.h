@@ -37,10 +37,6 @@ public:
         _new.year = _date.year;
         return _new;
     }
-    friend bool operator <(const Date& smaler, const Date& biger);
-    friend bool operator >(const Date& smaler, const Date& biger);
-    friend bool operator <=(const Date& smaler, const Date& biger);
-    friend bool operator >=(const Date& smaler, const Date& biger);
 };
 
 class Rental {

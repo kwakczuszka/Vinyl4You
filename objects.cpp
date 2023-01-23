@@ -7,6 +7,7 @@
 #include <wx/listctrl.h>
 #include <wx/calctrl.h>
 #include "main_frame.h"
+#include <wx/font.h>
 
 using namespace std;
 
@@ -171,17 +172,19 @@ EVT_LIST_ITEM_ACTIVATED(LIST_CTRL, DiscListCtrl::OnActivated)
 wxEND_EVENT_TABLE()
 
 void DiscListCtrl::Format() {
+    this->SetFont(wxFont(20, wxFONTFAMILY_MODERN, wxFONTSTYLE_ITALIC, wxFONTWEIGHT_BOLD, false, wxEmptyString, wxFONTENCODING_DEFAULT));
     this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 350);
     this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 350);
     this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 300);
-    this->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 156);
+    this->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 256);
 }
 
 void DiscListCtrl::Format2() {
+    this->SetFont(wxFont(20, wxFONTFAMILY_MODERN, wxFONTSTYLE_ITALIC, wxFONTWEIGHT_BOLD, false, wxEmptyString, wxFONTENCODING_DEFAULT));
     this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 350);
     this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 350);
     this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 300);
-    this->InsertColumn(3, wxString("Termin zwrotu"), wxLIST_FORMAT_LEFT, 156);
+    this->InsertColumn(3, wxString("Termin zwrotu"), wxLIST_FORMAT_LEFT, 256);
 }
 
 wxString DiscListCtrl::OnGetItemText(long item, long column) const {

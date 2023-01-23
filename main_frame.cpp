@@ -12,6 +12,7 @@
 #include <wx/image.h>
 #include <wx/wx.h>
 #include <wx/dc.h>
+#include <wx/font.h>
 
 using namespace std;
 
