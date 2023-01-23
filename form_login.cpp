@@ -109,6 +109,7 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
             Close(true);
             FormLogin* log_ = new FormLogin();
             log_->Show(true);
+            this->~FormRegister();
             wxMessageBox(wxT("Teraz możesz sie zalogować!"), wxT("Rejestracja pomyślna!"));
         }
     }
@@ -118,9 +119,11 @@ void FormRegister::OnRetLogin(wxCommandEvent& event) {
     Close(true);
     FormLogin* log_ = new FormLogin();
     log_->Show(true);
+    this->~FormRegister();
 }
 
-FormRegister::~FormRegister() = default;
+FormRegister::~FormRegister() {
+};
 
 BEGIN_EVENT_TABLE(FormRegister, wxFrame)
 EVT_BUTTON(BUTTON_Register, FormRegister::OnRegister)
@@ -204,6 +207,9 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
                     wxMessageBox(wxT("Witaj w Vinyl4You!"), wxT("Logowanie pomyślne!"));
                     MainFrame* frame = new MainFrame(a);
                     frame->Show(true);
+                    this->~FormLogin();
+                    user_pass.close();
+                    user_log.close();
 
                 }
             }
@@ -219,10 +225,11 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
 void FormLogin::OnRegister(wxCommandEvent& event) {
     FormRegister* regist_ = new FormRegister;
     regist_->Show(true);
-    Close();
+    this->~FormLogin();
 }
 
-FormLogin::~FormLogin() = default;
+FormLogin::~FormLogin() {
+};
 
 BEGIN_EVENT_TABLE(FormLogin, wxFrame)
 EVT_BUTTON(BUTTON_Login, FormLogin::OnLogin)

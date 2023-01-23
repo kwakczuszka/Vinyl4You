@@ -21,6 +21,30 @@ vector<Disc*> Disc::disclist_rent;
 vector<Disc*> Disc::disclist_my;
 vector<Rental*> Rental::rentlist;
 
+void deleteLine(std::string delLine) {
+    std::string line;
+    std::ifstream file;
+    file.open("rentals_data.txt", std::fstream::in);
+    if (file.good()) {
+        std::fstream temp("temp.txt", std::fstream::out);
+        while (getline(file, line)) {
+            if (line.find(delLine) != std::string::npos)
+                line.replace(line.find(delLine), delLine.length(), "");
+            if (!line.empty()) {
+                temp << line << "\n";
+            }
+        }
+        file.close();
+        temp.close();
+        remove("rentals_data.txt");
+        rename("temp.txt", "rentals_data.txt");
+    }
+    else {
+        wxMessageBox(wxT("błond!"), wxT("Zwrócono płytę!"), wxICON_INFORMATION);
+
+    }
+}
+
 Disc::Disc(string lol) {
     id = lol.substr(0, 3);
     title = lol.substr(3, 27);
@@ -50,31 +74,6 @@ Date::Date(int a, int b, int c) {
     day = a;
     month = b;
     year = c;
-}
-
-bool Date::three_mnths() {
-    wxDateTime bruh;
-    bruh.SetToCurrent();
-    int curr_d = bruh.GetDay();
-    int curr_m = bruh.GetMonth();
-    int curr_y = bruh.GetYear();
-
-    curr_m += 4;
-    curr_y += curr_m / 12;
-
-    Date* _3_mnth_fwd = new Date;
-    _3_mnth_fwd->day = curr_d;
-    _3_mnth_fwd->month = curr_m;
-    _3_mnth_fwd->year = curr_y;
-
-    if (this <= _3_mnth_fwd) {
-        _3_mnth_fwd->~Date();
-        bruh.~wxDateTime();
-        return true;
-    }
-    _3_mnth_fwd->~Date();
-    bruh.~wxDateTime();
-    return false;
 }
 
 string Date::pack() {
@@ -185,17 +184,8 @@ void DiscListCtrl::Format2() {
     this->InsertColumn(3, wxString("Termin zwrotu"), wxLIST_FORMAT_LEFT, 156);
 }
 
-const wxChar* SMALL_VIRTUAL_VIEW_ITEMS[][4] = {
-    {}
-};
-
 wxString DiscListCtrl::OnGetItemText(long item, long column) const {
-    if (GetItemCount() == WXSIZEOF(SMALL_VIRTUAL_VIEW_ITEMS)) {
-        return SMALL_VIRTUAL_VIEW_ITEMS[item][column];
-    }
-    else {
-        return wxString::Format(wxT("Column %ld of item %ld"), column, item);
-    }
+    return wxString::Format(wxT("Column %ld of item %ld"), column, item);
 }
 
 void DiscListCtrl::Refresh_lists() {
@@ -246,10 +236,36 @@ void DiscListCtrl::OnActivated(wxListEvent& event) {
         Calendar* cal = new Calendar(this, CAL_DATE, itemek, dt, wxPoint(150, 150), wxDefaultSize, NULL, "");
     }
     else if (this->GetParent()->GetName() == "return") {
+        wxListItem item = event.GetItem();
+        wxString tittle = item.GetText();
+        tittle.ToStdString();
+        vector<Rental*>::iterator itr;
+        vector<Disc*>::iterator itr2;
+        bool pas = false;
+        for (itr = Rental::rentlist.begin(); itr < Rental::rentlist.end(); itr++) {
+            if ((*itr)->login == MainFrame::logged_user) {
+                for (itr2 = Disc::disclist_my.begin(); itr2 < Disc::disclist_my.end(); ) {
+                    if ((*itr2)->title == tittle&&(*itr)->disc_id==(*itr2)->id) {
+                        deleteLine((*itr)->pack());
+                        itr = Rental::rentlist.erase(itr);
+                        MainFrame::DataUpdate(MainFrame::logged_user);
+                        DiscListCtrl::Refresh_lists();
+                        pas = true;
+                        break;
+                    }
+                    else {
+                        itr2++;
+                    }
+                }
+            }
+            if (pas)
+                break;
+        }
+        wxMessageBox(wxT("Dziękujemy za skorzystanie z usług, zapraszamy ponownie!"), wxT("Zwrócono płytę!"), wxICON_INFORMATION);
 
     }
     else {
-        wxMessageBox(wxT("xddddddddddddd!"), wxT("Błąd logowania!"), wxICON_ERROR);
+        wxMessageBox(wxT("W celu wypożyczenia płyty, skorzystaj z zakładki \"Wypożycz płytę\""), wxT("Informacja"), wxICON_INFORMATION);
     }
 
 }
@@ -265,21 +281,81 @@ void Calendar::DateGet(wxCalendarEvent& event) {
     int yer = date.GetYear();
     wxDateTime today;
     today.SetToCurrent();
-    Date* todey = new Date(today.GetDay(), today.GetMonth()+1, today.GetYear());
+    Date* todey = new Date(today.GetDay(), today.GetMonth() + 1, today.GetYear());
     Date* data = new Date(day, mont, yer);
-    if (data > todey) {
-        fstream rentals_data;
-        rentals_data.open("rentals_data.txt", ios::app);
-        Rental* rent = new Rental(MainFrame::logged_user, id_, data);
-        rentals_data << rent->pack() << endl;
-        wxMessageBox(wxT("Właśnie wypożyczyłeś płytę! Życzymy audiofilskich doznań!"), wxT("Dziękujemy z skorzystanie z usług!"), wxICON_INFORMATION);
-        today.~wxDateTime();
-        todey->~Date();
+
+    bool statement;
+
+    if (data->year < todey->year) {
         data->~Date();
-        rent->~Rental();
-        rentals_data.close();
-        MainFrame::DataUpdate(MainFrame::logged_user);
-        DiscListCtrl::Refresh_lists();
+        statement= false;
+    }
+    else if (data->year > todey->year) {
+        data->~Date();
+        statement= true;
+    }
+    else if (data->month < todey->month) {
+        data->~Date();
+        statement= false;
+    }
+    else if (data->month > todey->month) {
+        data->~Date();
+        statement= true;
+    }
+    else if (data->day < todey->day) {
+        data->~Date();
+        statement= false;
+    }
+    else {
+        data->~Date();
+        statement = true;
+    }
+    if (statement) {
+        todey->month += 3;
+        if (todey->month > 12) {
+            todey->month -= 12;
+            todey->year++;
+        }
+        if (data->year > todey->year) {
+            data->~Date();
+            statement = false;
+        }
+        else if (data->year < todey->year) {
+            data->~Date();
+            statement = true;
+        }
+        else if (data->month > todey->month) {
+            data->~Date();
+            statement = false;
+        }
+        else if (data->month < todey->month) {
+            data->~Date();
+            statement = true;
+        }
+        else if (data->day > todey->day) {
+            data->~Date();
+            statement = false;
+        }
+        else {
+            data->~Date();
+            statement = true;
+        }
+        if (statement) {
+            fstream rentals_data;
+            rentals_data.open("rentals_data.txt", ios::app);
+            Rental* rent = new Rental(MainFrame::logged_user, id_, data);
+            rentals_data << rent->pack() << endl;
+            wxMessageBox(wxT("Właśnie wypożyczyłeś płytę! Życzymy audiofilskich doznań!"), wxT("Dziękujemy z skorzystanie z usług!"), wxICON_INFORMATION);
+            today.~wxDateTime();
+            todey->~Date();
+            data->~Date();
+            rent->~Rental();
+            rentals_data.close();
+            MainFrame::DataUpdate(MainFrame::logged_user);
+            DiscListCtrl::Refresh_lists();
+        }
+        else
+            wxMessageBox(wxT("Data powinna zawierać się w przedziale jutro + 3 miesiące"), wxT("Błąd!"), wxICON_INFORMATION);
     }
     else
         wxMessageBox(wxT("Data powinna zawierać się w przedziale jutro + 3 miesiące"), wxT("Błąd!"), wxICON_INFORMATION); 
@@ -292,6 +368,3 @@ DiscListCtrl* DiscListCtrl::all_discs_list;
 wxBEGIN_EVENT_TABLE(Calendar, wxCalendarCtrl)
 EVT_CALENDAR(CAL_DATE, Calendar::DateGet)
 wxEND_EVENT_TABLE()
-
-
-

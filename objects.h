@@ -27,7 +27,6 @@ public:
 public:
     Date();
     Date(int a, int b, int c);
-    bool three_mnths();
     string format_();
     string pack();
     
@@ -38,6 +37,10 @@ public:
         _new.year = _date.year;
         return _new;
     }
+    friend bool operator <(const Date& smaler, const Date& biger);
+    friend bool operator >(const Date& smaler, const Date& biger);
+    friend bool operator <=(const Date& smaler, const Date& biger);
+    friend bool operator >=(const Date& smaler, const Date& biger);
 };
 
 class Rental {
@@ -87,4 +90,6 @@ public:
 };
 
 enum {CAL_DATE = 2137};
+
+void deleteLine(std::string delLine);
 

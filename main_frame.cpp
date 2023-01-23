@@ -16,10 +16,29 @@
 using namespace std;
 
 MainFrame::~MainFrame() {
+    wxWindowList list = this->GetChildren();
+    for (int i = 0; i < list.size(); i++) {
+        list[i]->DestroyChildren();
+    }
     this->DestroyChildren();
 }
 
 void MainFrame::DataUpdate(string login) {
+    vector<Disc*>::iterator itd;
+    vector<Rental*>::iterator itr;
+
+    for (itr = Rental::rentlist.begin(); itr < Rental::rentlist.end(); itr++) {
+        (*itr)->~Rental();
+    }
+    for (itd = Disc::disclist.begin(); itd < Disc::disclist.end(); itd++) {
+        (*itd)->~Disc();
+    }
+    for (itd = Disc::disclist_my.begin(); itd < Disc::disclist_my.end(); itd++) {
+        (*itd)->~Disc();
+    }
+    for (itd = Disc::disclist_rent.begin(); itd < Disc::disclist_rent.end(); itd++) {
+        (*itd)->~Disc();
+    }
     Disc::disclist.clear();
     Disc::disclist_my.clear();
     Disc::disclist_rent.clear();
@@ -40,8 +59,6 @@ void MainFrame::DataUpdate(string login) {
         Rental* rent = new Rental(a);
         Rental::rentlist.push_back(rent);
     }
-    vector<Disc*>::iterator itd;
-    vector<Rental*>::iterator itr;
 
     for (itr = Rental::rentlist.begin(); itr < Rental::rentlist.end(); itr++) {
         if ((*itr)->login == login) {
@@ -126,11 +143,12 @@ MainFrame::MainFrame(std::string logged_) : wxFrame(nullptr, wxID_ANY, "Vinyl4Yo
 }
 
 void MainFrame::OnExit(wxCommandEvent& event) {
+    this->~MainFrame();
     Close(true);
 }
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
-    wxMessageBox("no siema, chcesz winylka?", "vinyl4you", wxOK | wxICON_INFORMATION);
+    wxMessageBox("Brought to you by K. Kwak, M. Libera and K. Peszko", "Vinyl4You", wxOK | wxICON_INFORMATION);
 }
 
 void MainFrame::OnLogout(wxCommandEvent& event) {
