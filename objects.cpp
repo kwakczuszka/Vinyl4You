@@ -57,9 +57,24 @@ Disc::Disc(string lol) {
     rtrim(artist);
     rtrim(genre);
     rtrim(length);
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'Disc' object at " << &*this << "\n";
 };
 
-Date::Date() = default;
+Disc::~Disc() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'Disc' object at " << &*this << "\n";
+};
+
+Date::Date() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'Date' object at " << &*this << "\n";
+};
+
+Date::~Date() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'Date' object at " << &*this << "\n";
+};
 
 string Date::format_() {
     string a="";
@@ -75,6 +90,8 @@ Date::Date(int a, int b, int c) {
     day = a;
     month = b;
     year = c;
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'Date' object at " << &*this << "\n";
 }
 
 string Date::pack() {
@@ -104,18 +121,30 @@ Rental::Rental(string lmao) {
     rtrim(y);
     rtrim(z);
     dedline = new Date(stoi(x), stoi(y), stoi(z));
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'Rental' object at " << &*this << "\n";
 }
 
 Rental::Rental(string log, int d_id, Date* dedl) {
     login = log;
     disc_id = to_string(d_id);
     dedline = dedl;
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'Rental' object at " << &*this << "\n";
 }
 
 Rental::Rental(string log, string d_id, Date* dedl) {
     login = log;
     disc_id = d_id;
     dedline = dedl;
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'Rental' object at " << &*this << "\n";
+}
+
+Rental::~Rental() {
+    this->dedline->~Date();
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'Rental' object at " << &*this << "\n";
 }
 
 bool Rental::passed() {
@@ -171,12 +200,19 @@ wxBEGIN_EVENT_TABLE(DiscListCtrl, wxListCtrl)
 EVT_LIST_ITEM_ACTIVATED(LIST_CTRL, DiscListCtrl::OnActivated)
 wxEND_EVENT_TABLE()
 
+DiscListCtrl::~DiscListCtrl() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'DiscListCtrl' object at " << &*this << "\n";
+}
+
 void DiscListCtrl::Format() {
     this->SetFont(wxFont(18, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString, wxFONTENCODING_DEFAULT));
     this->InsertColumn(0, wxString("Tytul"), wxLIST_FORMAT_LEFT, 450);
     this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 275);
     this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 275);
     this->InsertColumn(3, wxString("Czas trwania"), wxLIST_FORMAT_LEFT, 256);
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> DiscListCtrl object at " << &*this << " formatted\n";
 }
 
 void DiscListCtrl::Format2() {
@@ -185,6 +221,8 @@ void DiscListCtrl::Format2() {
     this->InsertColumn(1, wxString("Artysta"), wxLIST_FORMAT_LEFT, 275);
     this->InsertColumn(2, wxString("Gatunek"), wxLIST_FORMAT_LEFT, 275);
     this->InsertColumn(3, wxString("Termin zwrotu"), wxLIST_FORMAT_LEFT, 256);
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> DiscListCtrl object at " << &*this << " formatted\n";
 }
 
 wxString DiscListCtrl::OnGetItemText(long item, long column) const {
@@ -192,6 +230,8 @@ wxString DiscListCtrl::OnGetItemText(long item, long column) const {
 }
 
 void DiscListCtrl::Refresh_lists() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << " List refresh has begun\n";
     DiscListCtrl::rentlist_list->ClearAll();
     DiscListCtrl::rentlist_my_list->ClearAll();
     DiscListCtrl::all_discs_list->ClearAll();
@@ -230,15 +270,21 @@ void DiscListCtrl::Refresh_lists() {
         DiscListCtrl::all_discs_list->SetItem(index, 2, ((*itr)->genre));
         DiscListCtrl::all_discs_list->SetItem(index, 3, ((*itr)->length));
     }
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << " List refresh finished\n";
 };
 
 void DiscListCtrl::OnActivated(wxListEvent& event) {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Picked disc " << event.GetItem().GetText() << "\n";
     if (this->GetParent()->GetName() == "rent") {
         wxMessageBox(wxT("Wybierz deklarowaną datę zwrotu płyty (max. 3 miesiące)"), wxT("Informacja"), wxICON_INFORMATION);
 
-        wxDateTime dt = wxDefaultDateTime;
+        wxDateTime dat = wxDefaultDateTime;
         wxListItem itemek = event.GetItem();
-        Calendar* cal = new Calendar(this, CAL_DATE, itemek, dt, wxPoint(328, 50), wxSize(600, 300), NULL, "");
+        Calendar* cal = new Calendar(this, CAL_DATE, itemek, dat, wxPoint(328, 50), wxSize(600, 300), NULL, "");
+        MyApp::dt.SetToCurrent();
+        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Date select shown\n";
     }
     else if (this->GetParent()->GetName() == "return") {
         wxListItem item = event.GetItem();
@@ -251,11 +297,14 @@ void DiscListCtrl::OnActivated(wxListEvent& event) {
             if ((*itr)->login == MainFrame::logged_user) {
                 for (itr2 = Disc::disclist_my.begin(); itr2 < Disc::disclist_my.end(); ) {
                     if ((*itr2)->title == tittle&&(*itr)->disc_id==(*itr2)->id) {
+                        MyApp::dt.SetToCurrent();
+                        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << " > Disc id " << (*itr2)->id << " returned\n";
                         deleteLine((*itr)->pack());
                         itr = Rental::rentlist.erase(itr);
                         MainFrame::DataUpdate(MainFrame::logged_user);
                         DiscListCtrl::Refresh_lists();
                         pas = true;
+                        
                         break;
                     }
                     else {
@@ -267,17 +316,25 @@ void DiscListCtrl::OnActivated(wxListEvent& event) {
                 break;
         }
         wxMessageBox(wxT("Dziękujemy za skorzystanie z usług, zapraszamy ponownie!"), wxT("Zwrócono płytę!"), wxICON_INFORMATION);
-
+        
+        MyApp::dt.SetToCurrent();
+        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Info message shown (disc returned)\n";
     }
     else {
         wxMessageBox(wxT("W celu wypożyczenia płyty, skorzystaj z zakładki \"Wypożycz płytę\""), wxT("Informacja"), wxICON_INFORMATION);
+        MyApp::dt.SetToCurrent();
+        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Info message shown (wrong list)\n";
     }
 }
 
 void Calendar::DateGet(wxCalendarEvent& event) {
     wxDateTime date = event.GetDate();
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Picked date " << date.FormatISODate() << "\n";
     wxListItem item = this->disc;
     this->~Calendar();
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Date select closed\n";
     string id_ = Disc::disclist_rent[Disc::disclist_rent.size() - item.m_itemId - 1]->id;
     int day = date.GetDay();
     int mont = date.GetMonth();
@@ -349,7 +406,11 @@ void Calendar::DateGet(wxCalendarEvent& event) {
             rentals_data.open("rentals_data.txt", ios::app);
             Rental* rent = new Rental(MainFrame::logged_user, id_, data);
             rentals_data << rent->pack() << endl;
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Succesfully rent disc with id "<< id_ << " by " << MainFrame::logged_user << " with deadline " << date.FormatISODate() << "\n";
             wxMessageBox(wxT("Właśnie wypożyczyłeś płytę! Życzymy audiofilskich doznań!"), wxT("Dziękujemy z skorzystanie z usług!"), wxICON_INFORMATION);
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Thanks for rent window shown\n";
             today.~wxDateTime();
             todey->~Date();
             data->~Date();
@@ -358,13 +419,25 @@ void Calendar::DateGet(wxCalendarEvent& event) {
             MainFrame::DataUpdate(MainFrame::logged_user);
             DiscListCtrl::Refresh_lists();
         }
-        else
+        else {
             wxMessageBox(wxT("Data powinna zawierać się w przedziale jutro + 3 miesiące"), wxT("Błąd!"), wxICON_INFORMATION);
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Picked date out of range\n";
+        }
+            
     }
-    else
-        wxMessageBox(wxT("Data powinna zawierać się w przedziale jutro + 3 miesiące"), wxT("Błąd!"), wxICON_INFORMATION); 
+    else {
+        wxMessageBox(wxT("Data powinna zawierać się w przedziale jutro + 3 miesiące"), wxT("Błąd!"), wxICON_INFORMATION);
+        MyApp::dt.SetToCurrent();
+        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Picked date out of range\n";
+    }
+        
 }
 
+Calendar::~Calendar() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'Calendar' object at " << &*this << "\n";
+}
 DiscListCtrl* DiscListCtrl::rentlist_list;
 DiscListCtrl* DiscListCtrl::rentlist_my_list;
 DiscListCtrl* DiscListCtrl::all_discs_list;

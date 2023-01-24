@@ -4,12 +4,14 @@
 #include "md5.h"
 #include <fstream>
 #include "main_frame.h"
+#include <cstdio>
 
 using namespace std; 
 
 FormRegister::FormRegister() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Rejestracja", wxPoint(wxID_ANY, wxID_ANY), wxSize(340, 180),
     wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
-
+    
+   
     SetIcon(wxICON(vinyl_ico));
 
     wxPanel* panel = new wxPanel(this, wxID_ANY);
@@ -57,6 +59,14 @@ FormRegister::FormRegister() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Rejestrac
     rpt_password_input->Bind(wxEVT_TEXT_ENTER, &FormRegister::OnRegister, this);
 
     Centre();
+
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'FormRegister' object at " << &*this << "\n";
+
+}
+
+void FormRegister::OnQuit(wxCommandEvent& event) {
+    Close(true);
 }
 
 void FormRegister::OnRegister(wxCommandEvent &event) {
@@ -67,8 +77,12 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
     if (username.size() < 3 || password.size() < 3 || rpt_password.size() < 3) {
         if (username.size() > 13) {
             wxMessageBox(wxT("Login może składać się z maksymalnie 13 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Regitration failed (user provided invalid login/password)\n";
         }
         wxMessageBox(wxT("Login i/lub hasło muszą składać się z co najmniej 3 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+        MyApp::dt.SetToCurrent();
+        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Regitration failed (user provided invalid login/password)\n";
     }
     
 
@@ -90,6 +104,8 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
                 string j = string(username);
                 if (j == a) {
                     wxMessageBox(wxT("Login zajęty!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+                    MyApp::dt.SetToCurrent();
+                    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Registration failed (login provided by user was already taken)\n";
                     x = false;
                 }
             }
@@ -98,6 +114,10 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
                 user_log.open("log_data.txt", ios::in | ios::app);
                 string h = md5(string(password.mb_str()));
                 string g = string(username);
+                
+                MyApp::dt.SetToCurrent();
+                
+                MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Registered user " << g << " successfully!\n";
                 h += "\n";
                 g += "\n";
                 user_pass << h;
@@ -106,9 +126,11 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
             }
         }
         if (success) {
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Registration successful\n";
             Close(true);
-            FormLogin* log_ = new FormLogin();
-            log_->Show(true);
+            FormLogin* login_ = new FormLogin();
+            login_->Show(true);
             this->~FormRegister();
             wxMessageBox(wxT("Teraz możesz sie zalogować!"), wxT("Rejestracja pomyślna!"));
         }
@@ -117,12 +139,14 @@ void FormRegister::OnRegister(wxCommandEvent &event) {
 
 void FormRegister::OnRetLogin(wxCommandEvent& event) {
     Close(true);
-    FormLogin* log_ = new FormLogin();
-    log_->Show(true);
+    FormLogin* logow = new FormLogin();
+    logow->Show(true);
     this->~FormRegister();
 }
 
 FormRegister::~FormRegister() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'FormRegister' object (with children) at " << &*this << "\n";
 };
 
 BEGIN_EVENT_TABLE(FormRegister, wxFrame)
@@ -172,11 +196,13 @@ FormLogin::FormLogin() : wxFrame(nullptr, wxID_ANY, "Vinyl4You - Logowanie", wxP
 
 
     Centre();
+
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'FormLogin' object at " << &*this << "\n";
 }
 
 void FormLogin::OnQuit(wxCommandEvent& event) {
-    Close(true);
-    this->~FormLogin();
+    Close();
 }
 
 void FormLogin::OnLogin(wxCommandEvent& event) {
@@ -191,9 +217,15 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
         if (username.size() < 3 || password.size() < 3) {
             if (username.size() > 13) {
                 wxMessageBox(wxT("Login może składać się z maksymalnie 13 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+                
+                MyApp::dt.SetToCurrent();
+                MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Logging in unsuccessful (user provided wrong password/login)\n";
 
             }
             wxMessageBox(wxT("Login i/lub hasło muszą składać się z co najmniej 3 znaków!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+            
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Logging in unsuccessful (user provided wrong password/login)\n";
         } 
         else {
             string a;
@@ -203,18 +235,23 @@ void FormLogin::OnLogin(wxCommandEvent& event) {
                 if (a == string(username) && md5(string(password)) == b) {
                     x = false;
                     Close(true);
-
+                    
+                    MyApp::dt.SetToCurrent();
+                    
+                    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Logged " << username << " successfully!\n";
                     wxMessageBox(wxT("Witaj w Vinyl4You!"), wxT("Logowanie pomyślne!"));
                     MainFrame* frame = new MainFrame(a);
                     frame->Show(true);
                     this->~FormLogin();
                     user_pass.close();
                     user_log.close();
-
                 }
             }
             if (x) {
                 wxMessageBox(wxT("Wprowadzony login i/lub hasło są niepoprawne!"), wxT("Błąd logowania!"), wxICON_ERROR);
+                
+                MyApp::dt.SetToCurrent();
+                MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Logging in unsuccessful (user provided wrong password/login)\n";
             }
         }
     }
@@ -229,6 +266,9 @@ void FormLogin::OnRegister(wxCommandEvent& event) {
 }
 
 FormLogin::~FormLogin() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'FormLogin' object (with children) at " << &*this << "\n";
+    
 };
 
 BEGIN_EVENT_TABLE(FormLogin, wxFrame)

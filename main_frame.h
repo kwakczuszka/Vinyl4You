@@ -12,11 +12,6 @@ private:
     wxBitmapButton* button_rent;
     wxBitmapButton* button_my_rentals;
     wxBitmapButton* button_all_discs;
-    wxPanel* panel_menu;
-    wxPanel* panel_rent;
-    wxPanel* panel_my_rentals;
-    wxPanel* panel_all_discs;
-    wxPanel* panel_return_disc;
 
 public:
     wxWindow* window_rent;
@@ -49,3 +44,12 @@ private:
     enum {ID_Window_return_disc = 54};
 };
 
+class wxMyBitmapButton : public wxBitmapButton {
+public:
+    wxMyBitmapButton(wxWindow* parent, wxWindowID id, const wxBitmap& bitmap, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+        long style = wxBU_AUTODRAW, const wxValidator& validator = wxDefaultValidator, const wxString& name = wxButtonNameStr) : wxBitmapButton(parent, id, bitmap, pos, size, style, validator, name) {
+        MyApp::dt.SetToCurrent();
+        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'wxMyBitmapButton' object at " << &*this << "\n";
+    };
+    ~wxMyBitmapButton();
+};

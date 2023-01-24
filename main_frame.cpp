@@ -21,10 +21,19 @@ MainFrame::~MainFrame() {
     for (int i = 0; i < list.size(); i++) {
         list[i]->DestroyChildren();
     }
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'MainFrame' object (with children) at " << &*this << "\n";
     this->DestroyChildren();
 }
 
+wxMyBitmapButton::~wxMyBitmapButton() {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Destroyed 'wxMyBitmapButton' object at " << &*this << "\n";
+}
+
 void MainFrame::DataUpdate(string login) {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Data update has begun\n";
     vector<Disc*>::iterator itd;
     vector<Rental*>::iterator itr;
 
@@ -80,6 +89,8 @@ void MainFrame::DataUpdate(string login) {
                 itd++;
         }
     }
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Data updated\n";
     disc_data.close();
     rentals_data.close();
 }
@@ -89,9 +100,17 @@ string MainFrame::logged_user = "";
 MainFrame::MainFrame(std::string logged_) : wxFrame(nullptr, wxID_ANY, "Vinyl4You Client", wxPoint(wxID_ANY, wxID_ANY), wxSize(1280, 720),
     wxSYSTEM_MENU | wxMINIMIZE_BOX| wxMAXIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN) {
     SetIcon(wxICON(vinyl_ico));
+
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> MainFrame created at " << &*this << ", logged as "<< logged_<<"\n";
+
     MainFrame::logged_user = logged_;
     window_menu = new wxWindow(this, ID_Window_menu, wxDefaultPosition, wxSize(1280, 720), NULL, wxEmptyString);
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'wxWindow' object at " << &*window_menu << "\n";
     wxMenu* menu_options = new wxMenu;
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'wxMenu' object at " << &*menu_options << "\n";
     MainFrame::DataUpdate(logged_user);
         
     wxInitAllImageHandlers();
@@ -102,10 +121,9 @@ MainFrame::MainFrame(std::string logged_) : wxFrame(nullptr, wxID_ANY, "Vinyl4Yo
     wxBitmap bmp_2(img_2, wxBITMAP_SCREEN_DEPTH);
     wxBitmap bmp_3(img_3, wxBITMAP_SCREEN_DEPTH);
 
-    button_rent =           new wxBitmapButton(window_menu, BUTTON_rent, bmp_1, wxDefaultPosition, wxSize(640, 360), 0L, wxDefaultValidator, wxString("rencig"));
-    button_my_rentals =     new wxBitmapButton(window_menu, BUTTON_my_rentals, bmp_2, wxDefaultPosition, wxSize(640, 360), 0, wxDefaultValidator, wxString("bruh"));
-    button_all_discs =      new wxBitmapButton(window_menu, BUTTON_all_discs, bmp_3, wxDefaultPosition, wxSize(1280, 360), wxALIGN_CENTER, wxDefaultValidator, wxString("bruh"));
-//    button_return_disc =    new wxButton(window_menu, BUTTON_return_disc, wxT("Zwróć płytę"));
+    button_rent =           new wxMyBitmapButton(window_menu, BUTTON_rent, bmp_1, wxDefaultPosition, wxSize(640, 360), 0L, wxDefaultValidator, wxString("rencig"));
+    button_my_rentals =     new wxMyBitmapButton(window_menu, BUTTON_my_rentals, bmp_2, wxDefaultPosition, wxSize(640, 360), 0, wxDefaultValidator, wxString("bruh"));
+    button_all_discs =      new wxMyBitmapButton(window_menu, BUTTON_all_discs, bmp_3, wxDefaultPosition, wxSize(1280, 360), wxALIGN_CENTER, wxDefaultValidator, wxString("bruh"));
 
     wxGridSizer* buttonSizer = new wxGridSizer(2, 2, 1, 1);
     buttonSizer->Add(button_rent);
@@ -129,12 +147,14 @@ MainFrame::MainFrame(std::string logged_) : wxFrame(nullptr, wxID_ANY, "Vinyl4Yo
     SetMenuBar(menuBar);
 
     CreateStatusBar();
-    SetStatusText("Vinyl4You Client v. 1.0. All rights reserved. Logged as: "+logged_user);
+    SetStatusText(" Vinyl4You Client v. 1.0. All rights reserved. Logged as: "+logged_user);
 
     vector<Rental*>::iterator itr;
     for (itr = Rental::rentlist.begin(); itr < Rental::rentlist.end(); itr++) {
         if (logged_user == (*itr)->login && (*itr)->passed()) {
             wxMessageBox(wxT("Minął zadeklarowany czas zwrotu niektórych pozycji z Twojej audioteki!"), wxT("Ostrzeżenie!"), wxICON_WARNING);
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Behind deadline message shown\n";
         }
     }
 
@@ -145,10 +165,16 @@ MainFrame::MainFrame(std::string logged_) : wxFrame(nullptr, wxID_ANY, "Vinyl4Yo
 
 void MainFrame::OnExit(wxCommandEvent& event) {
     this->~MainFrame();
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "App terminated";
+    const char* new_name = "log_" + logged_user + "_" + MyApp::dt.FormatISOCombined('_');
+    rename("log.txt", new_name);
     Close(true);
 }
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> About message shown\n";
     wxMessageBox("Brought to you by K. Kwak, M. Libera and K. Peszko", "Vinyl4You", wxOK | wxICON_INFORMATION);
 }
 
@@ -156,16 +182,24 @@ void MainFrame::OnLogout(wxCommandEvent& event) {
     FormLogin* formLogin = new FormLogin();
     Close(true);
     this->~MainFrame();
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Logged out " << logged_user << "\n";
     wxMessageBox(wxT("Sesja zakończona"), wxT("Zostałeś wylogowany!"), wxICON_INFORMATION);
     logged_user = "";
     formLogin->Show(true);
 }
 
 void MainFrame::Helpr(MainFrame* frame, int a) {
+
     window_menu->~wxWindow();
     window_rent = new wxWindow(frame, ID_Window_rent, wxDefaultPosition, wxSize(1280, 670), wxCENTER, wxEmptyString);
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'wxWindow' object at " << &*window_rent << "\n";
 
     wxNotebook* sheesh = new wxNotebook(window_rent, ID_Window_rent, wxDefaultPosition, wxSize(1280, 760), wxCENTER, "Plytki");
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'wxNotebook' object at " << &*sheesh << "\n";
+
     wxWindow* sub_1 = new wxWindow(sheesh, wxID_ANY, wxPoint(40, 20), wxSize(1200, 600), wxCENTER, wxString("rent"));
     wxWindow* sub_2 = new wxWindow(sheesh, wxID_ANY, wxPoint(40, 20), wxSize(1200, 600), wxCENTER, wxString("return"));
     wxWindow* sub_3 = new wxWindow(sheesh, wxID_ANY, wxPoint(40, 20), wxSize(1200, 600), wxCENTER, wxString("nope"));
@@ -175,6 +209,7 @@ void MainFrame::Helpr(MainFrame* frame, int a) {
 
     DiscListCtrl::rentlist_list = new DiscListCtrl(sub_1, LIST_CTRL, wxPoint(50, 50), wxSize(1256, 610), wxLC_REPORT);
     DiscListCtrl::rentlist_list->Format();
+    
 
     for (itr = Disc::disclist_rent.begin(); itr < Disc::disclist_rent.end(); itr++) {
         long index = DiscListCtrl::rentlist_list->InsertItem(0, ((*itr)->title));
@@ -249,14 +284,20 @@ void MainFrame::Helpr(MainFrame* frame, int a) {
 }
 
 void MainFrame::OnRent(wxCommandEvent& event) {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Clicked wxBitmapButton at " << &*this << " (discs to rent)\n";
     MainFrame::Helpr(this, 1);
 }
 
 void MainFrame::OnMyRentals(wxCommandEvent& event) {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Clicked wxBitmapButton at " << &*this << " (discs to return)\n";
     MainFrame::Helpr(this, 2);
 }
 
 void MainFrame::OnAllDiscs(wxCommandEvent& event) {
+    MyApp::dt.SetToCurrent();
+    MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Clicked wxBitmapButton at " << &*this << " (all discs)\n";
     MainFrame::Helpr(this, 3);
 }
 

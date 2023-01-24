@@ -2,6 +2,8 @@
 #include <wx/listctrl.h>
 #include <wx/calctrl.h>
 #include "wx/datectrl.h"
+#include "main.h"
+
 
 using namespace std;
 
@@ -17,6 +19,7 @@ public:
     static vector <Disc*> disclist_rent;
 public:
     Disc(string lol);
+    ~Disc();
 };
 
 class Date {
@@ -26,6 +29,7 @@ public:
     int year;
 public:
     Date();
+    ~Date();
     Date(int a, int b, int c);
     string format_();
     string pack();
@@ -50,16 +54,22 @@ public:
     Rental(string lmao);
     Rental(string log, int d_id, Date* dedl);
     Rental(string log, string d_id, Date* dedl);
+    ~Rental();
     string pack();
 };
 
 class DiscListCtrl : public wxListCtrl {
     public:
-        DiscListCtrl(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxListCtrl(parent, id, pos, size, style) {}
+        DiscListCtrl(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxListCtrl(parent, id, pos, size, style) {
+            MyApp::dt.SetToCurrent();
+            MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'DiscListCtrl' object at " << &*this << "\n";
+        }
         void OnActivated(wxListEvent & event);
         static void Refresh_lists();
         void Format();
         void Format2();
+
+        ~DiscListCtrl();
 
         static DiscListCtrl* rentlist_list;
         static DiscListCtrl* rentlist_my_list;
@@ -75,12 +85,15 @@ enum {LIST_CTRL = 1000};
 class Calendar : wxCalendarCtrl {
 public:
     wxListItem disc;
-    Calendar(wxWindow* parent, wxWindowID id, const wxDateTime& date = wxDefaultDateTime, const wxPoint& pos = wxDefaultPosition, 
-        const wxSize& size = wxDefaultSize, long style = wxCAL_SHOW_HOLIDAYS, const wxString& name = "") : wxCalendarCtrl(parent, id, date, pos, size, style, name) {}
+    Calendar(wxWindow* parent, wxWindowID id, const wxDateTime& date = wxDefaultDateTime, const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxDefaultSize, long style = wxCAL_SHOW_HOLIDAYS, const wxString& name = "") : wxCalendarCtrl(parent, id, date, pos, size, style, name) {};
     Calendar(wxWindow* parent, wxWindowID id, wxListItem carry, const wxDateTime& date = wxDefaultDateTime, const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = wxCAL_SHOW_HOLIDAYS, const wxString& name = "") : wxCalendarCtrl(parent, id, date, pos, size, style, name) {
         disc = carry;
+        MyApp::dt.SetToCurrent();
+        MyApp::log_ << "<" << MyApp::dt.FormatISOCombined(' ') << "> Created 'Calendar' object at " << &*this << "\n";
     };
+    ~Calendar();
     void DateGet(wxCalendarEvent& event);
     wxDECLARE_EVENT_TABLE();
 };
